@@ -29,11 +29,11 @@ class WorkDay(models.Model):
     """This model is one work day"""
 
     VOTES = [
-        ("0", "Normal"),
-        ("1", "Weekend"),
-        ("2", "Times off"),
-        ("3", "Sick leave"),
-        ("4", "Public holiday"),
+        (0, "Normal"),
+        (1, "Weekend"),
+        (2, "Times off"),
+        (3, "Sick leave"),
+        (4, "Public holiday"),
     ]
 
     id = models.UUIDField(
@@ -43,13 +43,17 @@ class WorkDay(models.Model):
         editable=False,
     )
 
-    day = models.CharField(max_length=2, choices=VOTES, default="0")
+    day = models.IntegerField(choices=VOTES, default="0")
     start_of_work = models.TimeField(null=True)
     end_of_work = models.TimeField(null=True)
     date = models.DateField()
     created = models.DateTimeField(auto_now_add=True)
-    comment = models.CharField(max_length=200, null=True, blank=True)
+    comment = models.TextField(max_length=200, null=True, blank=True)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["date"]
+
+    def __str__(self) -> str:
+        return str(self.date)
