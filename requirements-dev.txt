@@ -1,0 +1,6 @@
+pytest>=7.4.0,<7.5
+pytest-xdist>=3.3.0,<3.4
+pytest-django>=4.6.0,<4.7.0
+pytest-cov>=4.1.0,<4.2
+pytest-sugar>=o.9.7,<1.0.0
+pytest-celery==0.0.0

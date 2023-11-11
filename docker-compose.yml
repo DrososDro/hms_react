@@ -1,0 +1,63 @@
+---
+version: '3.11'
+
+services:
+  db:
+    container_name: hms_db
+    image: postgres:16.0-alpine
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=devdb
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=changeme
+  app:
+    container_name: hms
+    build:
+      context: .
+      args:
+        - DEV=true
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./app:/app
+      - dev-static-data:/vol/web
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=changeme
+      - EMAIL_PASS=gnjgidfbskaqzztr
+      - EMAIL_HOST=drosostest@gmail.com
+    depends_on:
+      - db
+      - celery
+      - redis
+
+  celery:
+    container_name: celery
+    build:
+      context: .
+    command: celery --app=hms worker -l INFO
+    volumes:
+      - ./app:/app
+    environment:
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=changeme
+    depends_on:
+      - redis
+      - db
+
+  redis:
+    image: redis:7.0.11-alpine
+
+volumes:
+  dev-db-data:
+  dev-static-data:
