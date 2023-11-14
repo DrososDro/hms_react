@@ -1,3 +1,4 @@
+"""Models for the worktime app"""
 import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -34,6 +35,7 @@ class WorkDay(models.Model):
         (2, "Times off"),
         (3, "Sick leave"),
         (4, "Public holiday"),
+        (5, "Job Travel"),
     ]
 
     id = models.UUIDField(

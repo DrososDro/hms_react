@@ -32,6 +32,7 @@ urlpatterns = [
         name="docs",
     ),
     path("accounts/", include("accounts.urls")),
+    path("worktime/", include("worktime.urls")),
 ]
 #
 #
