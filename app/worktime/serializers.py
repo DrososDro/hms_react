@@ -1,6 +1,6 @@
 """Serializers for the work time app"""
 
-from rest_framework import serializers
+from rest_framework import serializers, validators
 from worktime.models import Shift, WorkDay
 
 
@@ -18,6 +18,7 @@ class ShiftSerializer(serializers.ModelSerializer):
         return shift
 
 
+# TODO: test for UniqueTogetherValidator
 class WorkDaySerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkDay
@@ -31,13 +32,15 @@ class WorkDaySerializer(serializers.ModelSerializer):
         )
 
     def validate(self, data):
+        user = self.context["request"].user
         start = data.get("start_of_work")
         end = data.get("end_of_work")
+        if WorkDay.objects.filter(owner=user, date=data["date"]).exists():
+            raise serializers.ValidationError(
+                "Please Select another Date This already exists"
+            )
 
         day = data.get("day")
-        print("start", start)
-        print("end", end)
-        print("day", day)
         if day == 0 and (start is None or end is None):
             raise serializers.ValidationError(
                 "Normal day should have (start of work) and (end of work)"

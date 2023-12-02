@@ -26,6 +26,7 @@ class Shift(models.Model):
         return f"{self.start_of_shift}-{self.end_of_shift}"
 
 
+# TODO: test for unique_together
 class WorkDay(models.Model):
     """This model is one work day"""
 
@@ -56,6 +57,7 @@ class WorkDay(models.Model):
 
     class Meta:
         ordering = ["date"]
+        unique_together = ("owner", "date")
 
     def __str__(self) -> str:
         return str(self.date)

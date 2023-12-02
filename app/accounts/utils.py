@@ -7,11 +7,11 @@ from django.conf import settings
 
 
 def send_activation_mail(request, user):
-    curent_site = get_current_site(request)
     uidb = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
+    curent_site = request.META.get("HTTP_REFERER")
 
-    site = f"http://{curent_site.domain}/activate/{uidb}/{token}/"
+    site = f"http://{curent_site}activate/{uidb}/{token}/"
 
     mail_subject = "Activate account for Our Site"
     message = f"""

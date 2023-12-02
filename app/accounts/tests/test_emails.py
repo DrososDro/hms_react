@@ -21,24 +21,21 @@ def uidb_mock(*args, **kwargs):
     return "uidb64"
 
 
-@patch("accounts.utils.get_current_site")
 @patch("accounts.utils.urlsafe_base64_encode", side_effect=uidb_mock)
 @patch("accounts.utils.default_token_generator.make_token")
 def test_send_creation_email_should_succeed(
     patched_token,
     patched_uidb,
-    patched_site,
     mailoutbox,
     settings,
     def_user,
 ):
     """Test send creation email with correct data"""
-    patched_site.return_value.domain = "xaos"
     patched_token.return_value = "token"
     settings.EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
     mail_subject = "Activate account for Our Site"
-    site = "http://xaos/activate/uidb64/token/"
+    site = "http://Noneactivate/uidb64/token/"
 
     assert len(mailoutbox) == 0
     res = client.post(CREATE_USER_URL, def_user)
