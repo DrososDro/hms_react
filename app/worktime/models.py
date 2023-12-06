@@ -54,6 +54,8 @@ class WorkDay(models.Model):
     comment = models.TextField(max_length=200, null=True, blank=True)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
+    before_work = models.IntegerField(null=True)
+    after_work = models.IntegerField(null=True)
 
     class Meta:
         ordering = ["date"]
